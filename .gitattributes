@@ -1,0 +1,30 @@
+# Normalize all text files to LF in the repository.
+# This keeps line endings consistent across Linux, macOS and Windows.
+* text=auto eol=lf
+
+# Source and text files (explicit, for clarity)
+*.c      text eol=lf
+*.h      text eol=lf
+*.cpp    text eol=lf
+*.hpp    text eol=lf
+*.md     text eol=lf
+*.txt    text eol=lf
+*.sh     text eol=lf
+*.ino    text eol=lf
+*.json   text eol=lf
+*.patch  text eol=lf
+Makefile text eol=lf
+
+# Binary files (never convert line endings)
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.ico    binary
+*.icns   binary
+*.pdf    binary
+*.fpd    binary
+*.bin    binary
+*.gz     binary
+*.tgz    binary
+*.zip    binary
