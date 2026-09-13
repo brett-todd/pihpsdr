@@ -9,6 +9,20 @@
 
 ################################################################
 #
+# Syntax-check this script before doing anything. "sh -n" parses
+# the whole file without executing it, so a truncated download or
+# a bad edit is caught here, up-front, before any package is
+# installed or removed.
+#
+################################################################
+
+if ! sh -n "$0"; then
+  echo "ERROR: $0 failed its syntax check (sh -n), aborting." >&2
+  exit 1
+fi
+
+################################################################
+#
 # a) determine the location of THIS script
 #    (this is where the files should be located)
 #    and assume this is in the pihpsdr directory
@@ -88,16 +102,42 @@ sudo apt-get --yes install libsqlite3-dev
 sudo apt-get --yes install libwebsockets-dev
 sudo apt-get --yes install zlib1g-dev
 #
-# We have (tried to) install both pulseaudio and
-# pipewire-pulse. When pipewire-pulse is available,
-# the pulseaudio daemon is not needed so we remove
-# pulseaudio in that case
+# We have (tried to) install both pulseaudio and pipewire-pulse.
+# When pipewire-pulse is providing the PulseAudio server, the stand-alone
+# pulseaudio daemon is redundant and we would like to remove it.
+#
+# WARNING - do NOT use the old test:
+#     RES=`sudo apt show pipewire-pulse | grep "^Installed" | wc -l`
+# "apt show" prints archive metadata, not the install state, and always
+# contains an "Installed-Size:" line which matches "^Installed". So RES was
+# 1 for ANY package that merely exists in the repositories, even when
+# pipewire-pulse was never installed, and pulseaudio was removed
+# unconditionally. On desktops (KDE Plasma etc.) a session/meta-package
+# depends on pulseaudio, so "apt remove pulseaudio" then cascaded into
+# removing the whole desktop environment.
+#
+# Robust replacement:
+#   1. Only continue if BOTH pulseaudio and pipewire-pulse are really
+#      installed (checked via dpkg, not "apt show").
+#   2. Simulate the removal first and only remove pulseaudio if nothing else
+#      would be removed with it (i.e. no desktop meta-package depends on it).
 #
 
-RES=`sudo apt show pipewire-pulse | grep "^Installed" | wc -l`
-if [ $RES -eq 1 ]; then
-  echo pipewire-pulse found, so removing pulseaudio
-  sudo apt --yes remove pulseaudio
+pkg_installed() {
+  dpkg-query -s "$1" 2>/dev/null | grep -q '^Status: .* installed$'
+}
+
+if pkg_installed pulseaudio && pkg_installed pipewire-pulse; then
+  # Count any *other* packages that would be dragged out with pulseaudio.
+  EXTRA=`LANG=C sudo apt-get --simulate --yes remove pulseaudio 2>/dev/null \
+           | grep '^Remv ' | grep -vc '^Remv pulseaudio '`
+  if [ "$EXTRA" -eq 0 ]; then
+    echo "pipewire-pulse present and pulseaudio can be removed cleanly; removing pulseaudio"
+    sudo apt-get --yes remove pulseaudio
+  else
+    echo "pipewire-pulse present, but removing pulseaudio would also remove $EXTRA other"
+    echo "package(s) (a desktop environment may depend on it). Leaving pulseaudio installed."
+  fi
 fi
 
 # ----------------------------------------------
