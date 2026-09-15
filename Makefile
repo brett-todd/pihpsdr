@@ -72,7 +72,8 @@ endif
 
 # Get git commit version and date
 GIT_DATE := $(firstword $(shell git --no-pager show --date=short --format="%ai" --name-only))
-GIT_VERSION := $(shell git describe --abbrev=0 --tags --always --dirty)-Matrix
+#GIT_VERSION := $(shell git describe --abbrev=0 --tags --always --dirty)-Matrix
+GIT_VERSION := $(shell if git describe --exact-match --tags >/dev/null 2>&1; then git describe --tags --dirty; else git describe --tags --dirty --long --always; fi)-Matrix
 GIT_COMMIT := $(shell git log --pretty=format:"%h"  -1)
 
 #
@@ -690,6 +691,13 @@ clean:
 	@make -C libspecbleach clean
 	@make -C rnnoise clean
 	@make -C wdsp clean
+
+.PHONY:	release
+release:	$(PROGRAM)
+	rm -f pihpsdr-$(GIT_VERSION).tar
+	rm -f release/pihpsdr/$(PROGRAM)
+	cp $(PROGRAM) release/pihpsdr/$(PROGRAM)
+	tar -cf pihpsdr-$(GIT_VERSION).tar release/pihpsdr
 
 #############################################################################
 #
