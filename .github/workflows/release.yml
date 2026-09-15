@@ -1,0 +1,36 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create source tarball
+        run: |
+          asset_name="pihpsdr-${GITHUB_REF_NAME}-source.tar"
+          git archive \
+            --format=tar \
+            --prefix="pihpsdr-${GITHUB_REF_NAME}/" \
+            --output="$asset_name" \
+            HEAD
+
+      - name: Resolve release asset name
+        id: asset
+        run: echo "path=$(find . -maxdepth 1 -type f -name 'pihpsdr-*-source.tar' | head -n 1)" >> "$GITHUB_OUTPUT"
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.asset.outputs.path }}
+          generate_release_notes: true
