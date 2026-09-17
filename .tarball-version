@@ -1,0 +1,3 @@
+VERSION=$Format:%(describe:tags=true)$
+DATE=$Format:%cs$
+COMMIT=$Format:%h$

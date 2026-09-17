@@ -70,11 +70,41 @@ endif
 
 -include make.config.pihpsdr
 
-# Get git commit version and date
-GIT_DATE := $(firstword $(shell git --no-pager show --date=short --format="%ai" --name-only))
-#GIT_VERSION := $(shell git describe --abbrev=0 --tags --always --dirty)-Matrix
-GIT_VERSION := $(shell if git describe --exact-match --tags >/dev/null 2>&1; then git describe --tags --dirty; else git describe --tags --dirty --long --always; fi)-Matrix
-GIT_COMMIT := $(shell git log --pretty=format:"%h"  -1)
+# Get git commit version and date.
+# When building from a GitHub release/source archive, .git is absent, so fall
+# back to the export-substituted .tarball-version file.
+ARCHIVE_VERSION := $(strip $(shell if test -f .tarball-version; then \
+	sed -n 's/^VERSION=//p' .tarball-version | sed '/^\$$Format:/d'; \
+fi))
+ARCHIVE_DATE := $(strip $(shell if test -f .tarball-version; then \
+	sed -n 's/^DATE=//p' .tarball-version | sed '/^\$$Format:/d'; \
+fi))
+ARCHIVE_COMMIT := $(strip $(shell if test -f .tarball-version; then \
+	sed -n 's/^COMMIT=//p' .tarball-version | sed '/^\$$Format:/d'; \
+fi))
+GIT_DIR_PRESENT := $(shell git rev-parse --git-dir >/dev/null 2>&1 && printf yes)
+GIT_DATE := $(firstword $(shell git --no-pager show --date=short --format="%ai" --name-only 2>/dev/null))
+GIT_VERSION := $(shell if [ -n "$(GIT_DIR_PRESENT)" ]; then \
+	latest_tag=$$(git describe --abbrev=0 --tags 2>/dev/null); \
+	if git describe --exact-match --tags >/dev/null 2>&1 \
+	   && git diff --no-ext-diff --quiet --exit-code \
+	   && git diff --cached --no-ext-diff --quiet --exit-code; then \
+		git describe --tags; \
+	elif printf '%s' "$$latest_tag" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$$'; then \
+		set -- $$(printf '%s' "$$latest_tag" | sed -E 's/^v([0-9]+)\.([0-9]+)\.([0-9]+)$$/\1 \2 \3/'); \
+		next_patch=$$(( $$3 + 1 )); \
+		commit_count=$$(git rev-list "$$latest_tag"..HEAD --count 2>/dev/null || printf '0'); \
+		short_commit=$$(git rev-parse --short HEAD 2>/dev/null); \
+		dirty=''; \
+		if ! git diff --no-ext-diff --quiet --exit-code \
+		   || ! git diff --cached --no-ext-diff --quiet --exit-code; then dirty='-dirty'; fi; \
+		printf 'v%s.%s.%s-dev%s-g%s%s' "$$1" "$$2" "$$next_patch" "$$commit_count" "$$short_commit" "$$dirty"; \
+	else \
+		git describe --tags --dirty --long --always 2>/dev/null; \
+	fi; \
+elif [ -n "$(ARCHIVE_VERSION)" ]; then printf '%s' "$(ARCHIVE_VERSION)"; fi)-Matrix
+GIT_COMMIT := $(shell if git rev-parse --short HEAD >/dev/null 2>&1; then git log --pretty=format:"%h" -1; elif [ -n "$(ARCHIVE_COMMIT)" ]; then printf '%s' "$(ARCHIVE_COMMIT)"; fi)
+GIT_DATE := $(if $(GIT_DATE),$(GIT_DATE),$(ARCHIVE_DATE))
 
 #
 # Compile with warning level set to maximum. Note the check against "unintendend" fallthroughs

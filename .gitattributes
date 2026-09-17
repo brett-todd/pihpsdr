@@ -28,3 +28,7 @@ Makefile text eol=lf
 *.gz     binary
 *.tgz    binary
 *.zip    binary
+
+# Keep a release-tag placeholder in source archives so archive builds can
+# recover the tag name even when .git is not present.
+.tarball-version export-subst
