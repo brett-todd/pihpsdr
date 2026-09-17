@@ -885,6 +885,10 @@ static void discovery(void) {
         !strcmp(discovered[i].network.interface_name, "XDMA") && have_i2c) { have_g2v1 = 1; }
   }
 
+#ifndef GPIO
+  have_g2v2 = 1;
+#endif
+
 #ifdef GPIO
   //
   // Even if compiled with GPIO support, do *not* show the "controller"
@@ -898,7 +902,7 @@ static void discovery(void) {
   // such that in special cases, something can be changed manually.
   //
   gpio_restore_state();
-  have_g2v2 = 1;
+  have_g2v2 = 0;
 
   if (have_g2v2) {
     if (controller != NO_CONTROLLER) {
