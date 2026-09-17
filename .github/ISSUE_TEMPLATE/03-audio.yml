@@ -1,0 +1,129 @@
+name: "🔊 Audio problem"
+description: "No RX audio, distorted audio, TX mic issues, VAC/digimode routing, or crackles/dropouts."
+title: "[Audio]: "
+labels: ["audio"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for anything sound-related: receive audio, transmit microphone audio, sidetone,
+        or Virtual Audio Cable (VAC) routing to digimode programs (WSJT-X, fldigi, etc.).
+
+        The **Audio Module** in use is critical — find it in **Menu → About** or `pihpsdr -V`
+        (`AudioModule=PULSE / ALSA / PIPEWIRE / PORTAUDIO`).
+
+  - type: textarea
+    id: version
+    attributes:
+      label: Version information
+      description: Full output of `pihpsdr -V` or **Menu → About** — must include the `AudioModule=` value.
+      render: text
+    validations:
+      required: true
+
+  - type: dropdown
+    id: audio_module
+    attributes:
+      label: Audio module in use
+      options:
+        - "PULSE (PulseAudio)"
+        - "PIPEWIRE"
+        - "ALSA"
+        - "PORTAUDIO"
+        - "Not sure"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Raspberry Pi OS (32-bit)
+        - Raspberry Pi OS (64-bit)
+        - Debian / Ubuntu / other Linux (desktop or laptop)
+        - macOS on Apple Silicon
+        - macOS on Intel
+    validations:
+      required: true
+
+  - type: input
+    id: os_details
+    attributes:
+      label: OS version / computer model
+      placeholder: Ubuntu 24.04 x86_64
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: What kind of audio problem?
+      options:
+        - "No RX (receive) audio at all"
+        - "RX audio distorted / crackling / dropouts / glitches"
+        - "RX audio too quiet or too loud"
+        - "TX microphone: no audio / not modulating"
+        - "TX microphone: distorted / low / hum"
+        - "Sidetone (CW) problem"
+        - "VAC / digimode routing (WSJT-X, fldigi, etc.)"
+        - "Wrong audio device / device not listed"
+        - "Latency too high"
+    validations:
+      required: true
+
+  - type: input
+    id: audio_hw
+    attributes:
+      label: Audio hardware / device
+      description: |
+        Which output and input devices? e.g. "USB sound card", "HDMI", "built-in headphone jack",
+        "radio's own codec (local audio on the SDR)", "ALSA loopback for VAC".
+      placeholder: USB CODEC (output) + built-in mic (input)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: audio_location
+    attributes:
+      label: Where is the audio routed?
+      options:
+        - "Audio on the computer running piHPSDR"
+        - "Audio on the radio (local audio / codec)"
+        - "Both / not sure"
+    validations:
+      required: false
+
+  - type: input
+    id: digimode
+    attributes:
+      label: Digimode program (if VAC-related)
+      placeholder: WSJT-X 2.7, using ALSA loopback / PulseAudio null-sink
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Terminal output
+      description: |
+        Start piHPSDR from a terminal, reproduce the audio problem, and paste any output — especially
+        audio-device open/close errors, xruns, or ALSA/Pulse/PipeWire warnings.
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Does audio work in other apps on the same machine/device? Any VAC scripts used (alsa.vac.sh / pipewire.vac.sh)?
+    validations:
+      required: false

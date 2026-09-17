@@ -1,0 +1,109 @@
+name: "🎛️ CAT / TCI / MIDI / controller problem"
+description: "rigctl (CAT) commands, TCI, MIDI controllers, or GPIO/Andromeda/G2 panels not working."
+title: "[Control]: "
+labels: ["control", "cat", "midi"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for remote-control and physical-control interfaces:
+        **rigctl/CAT** (serial or TCP), **TCI**, **MIDI** controllers, and **GPIO / Andromeda / G2 front panels**.
+
+  - type: textarea
+    id: version
+    attributes:
+      label: Version information
+      description: Full output of `pihpsdr -V` or **Menu → About** (must include compile-time Options — MIDI/GPIO).
+      render: text
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Raspberry Pi OS (32-bit)
+        - Raspberry Pi OS (64-bit)
+        - Debian / Ubuntu / other Linux (desktop or laptop)
+        - macOS on Apple Silicon
+        - macOS on Intel
+    validations:
+      required: true
+
+  - type: dropdown
+    id: interface
+    attributes:
+      label: Which control interface?
+      options:
+        - "rigctl / CAT over TCP"
+        - "rigctl / CAT over serial (USB-serial)"
+        - "TCI"
+        - "MIDI controller"
+        - "GPIO buttons/encoders (Raspberry Pi)"
+        - "Andromeda front panel"
+        - "G2 / G2V2 front panel"
+    validations:
+      required: true
+
+  - type: input
+    id: client
+    attributes:
+      label: Controlling program / hardware
+      description: |
+        e.g. "WSJT-X via Hamlib NET rigctl", "N1MM", "Behringer CMD MICRO MIDI", "custom Arduino CAT",
+        "Andromeda controller v1.x". For MIDI, state the device name/model.
+      placeholder: WSJT-X (Hamlib, rig = Hamlib NET rigctl, 127.0.0.1:19090)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: device
+    attributes:
+      label: Radio / device
+      options:
+        - "HPSDR (Hermes / Angelia / Orion / Orion2 / ANAN)"
+        - "Saturn / ANAN-G2"
+        - "Hermes Lite 2 (HL2)"
+        - "STEMlab / Red Pitaya"
+        - "SoapySDR device"
+        - "Other / not sure"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_actual
+    attributes:
+      label: What did you expect vs. what happened?
+      placeholder: |
+        Expected: setting frequency in WSJT-X changes VFO A.
+        Actual: piHPSDR ignores it / assigns the wrong action / jumps to the wrong VFO.
+    validations:
+      required: true
+
+  - type: input
+    id: command
+    attributes:
+      label: Exact CAT/TCI command or MIDI mapping (if applicable)
+      description: The specific command string (e.g. `ZZFA00014074000;`) or the MIDI note/CC and the action you mapped it to.
+      placeholder: "ZZFA00014074000;  → expected VFO-A to 14.074 MHz"
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Terminal output
+      description: |
+        Start piHPSDR from a terminal, reproduce the problem, and paste the output. For CAT/TCI include
+        the command traffic if visible; for MIDI include the detected device/event lines at startup.
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+    validations:
+      required: false

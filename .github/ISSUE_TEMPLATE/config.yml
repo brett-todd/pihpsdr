@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: piHPSDR Manual (PDF, ~300 pages)
+    url: https://github.com/dl1ycf/pihpsdr/releases/download/v2.5/piHPSDR-Manual.pdf
+    about: Most operating questions are answered here. Please check the manual before opening an issue.
+  - name: Compiling / Installing piHPSDR
+    url: https://github.com/brett-todd/pihpsdr/blob/master/README_COMPILING.md
+    about: Read this first for build, dependency and installation problems.
+  - name: Question / Discussion (not a bug)
+    url: https://m0aws.co.uk/matrix/
+    about: For usage questions, operating help, or general discussion, please use the Matrix channel instead of an issue.

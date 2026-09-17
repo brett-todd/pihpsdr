@@ -1,0 +1,203 @@
+name: "🐞 Bug report"
+description: "Report a crash, wrong behaviour or regression in piHPSDR."
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug report. The more of the fields below you fill in,
+        the faster we can reproduce and fix the problem.
+
+        **Before you start**
+        - Please search [existing issues](https://github.com/brett-todd/pihpsdr/issues?q=is%3Aissue) first.
+        - Usage questions and general discussion belong in the [Matrix channel](https://m0aws.co.uk/matrix/), not here.
+        - The exact version string is essential. Open **Menu → About** in piHPSDR, or run `pihpsdr -V`
+          from a terminal, and paste the full block into the "Version information" field below.
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Pre-flight checklist
+      options:
+        - label: I searched existing open and closed issues and did not find a duplicate.
+          required: true
+        - label: I am running a self-compiled build from the current release branch or a specific release build I can identify.
+          required: true
+        - label: I can reproduce this with a **fresh/default configuration** (or I have noted below that I cannot).
+          required: false
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: A clear and concise description of what the bug is.
+      placeholder: When I do X, piHPSDR does Y, but I expected Z.
+    validations:
+      required: true
+
+  - type: textarea
+    id: version
+    attributes:
+      label: Version information
+      description: |
+        Paste the **complete** output. Get it from **Menu → About**, or run `pihpsdr -V` in a terminal.
+        This includes the version, commit hash, build date, compile-time Options and the Audio Module.
+      render: text
+      placeholder: |
+        piHPSDR version 3.0.15(abc1234); built 2026-09-17
+        Compile-time options      : GPIO MIDI SOAPYSDR AudioModule=PULSE
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Raspberry Pi OS (32-bit)
+        - Raspberry Pi OS (64-bit)
+        - Debian / Ubuntu / other Linux (desktop or laptop)
+        - Other Linux (please specify in "Additional context")
+        - macOS on Apple Silicon (M1/M2/M3/M4)
+        - macOS on Intel
+    validations:
+      required: true
+
+  - type: input
+    id: os_details
+    attributes:
+      label: OS version / hardware details
+      description: |
+        e.g. "Raspberry Pi 5 / 8 GB, Raspberry Pi OS Bookworm 64-bit", "Ubuntu 24.04 x86_64",
+        "macOS 15.1 (Homebrew)". For Pi include the model; for macOS state Homebrew or MacPorts.
+      placeholder: Raspberry Pi 4B 4GB, Raspberry Pi OS Bookworm 64-bit
+    validations:
+      required: true
+
+  - type: dropdown
+    id: device
+    attributes:
+      label: Radio / device
+      description: Which SDR are you connecting to?
+      options:
+        - "HPSDR: Hermes (ANAN-10/100)"
+        - "HPSDR: Hermes II"
+        - "HPSDR: Angelia (ANAN-100D)"
+        - "HPSDR: Orion (ANAN-200D)"
+        - "HPSDR: Orion2 / ANAN-7000DLE / 8000DLE"
+        - "HPSDR: Saturn / ANAN-G2"
+        - "HPSDR: ANAN-G2 (G2V2 front panel)"
+        - "Hermes Lite 2 (HL2)"
+        - "Hermes Lite (v1)"
+        - "STEMlab / Red Pitaya (HAMlab)"
+        - "Metis / Ozy (legacy)"
+        - "SoapySDR: RTL-SDR"
+        - "SoapySDR: Adalm-Pluto"
+        - "SoapySDR: HackRF"
+        - "SoapySDR: Airspy"
+        - "SoapySDR: SDRplay"
+        - "SoapySDR: other (specify below)"
+        - "Other / not sure"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: protocol
+    attributes:
+      label: Protocol
+      options:
+        - "P1 (old / original HPSDR protocol)"
+        - "P2 (new HPSDR protocol)"
+        - "SoapySDR"
+        - "Not sure"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: connection
+    attributes:
+      label: How is the radio connected?
+      options:
+        - "Direct Ethernet cable (radio ↔ computer)"
+        - "Ethernet via switch/router (same subnet)"
+        - "Ethernet via switch/router (different subnet / VLAN / Wi-Fi)"
+        - "USB (Ozy / SoapySDR device)"
+        - "localhost / same machine (e.g. Pluto, emulator)"
+        - "Remote (client/server mode)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Are you using client/server (remote) mode?
+      options:
+        - "No — local operation only"
+        - "Yes — running as server"
+        - "Yes — running as client"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Exact, numbered steps. Include the menu path, band, mode, and any control you touched.
+      placeholder: |
+        1. Start piHPSDR from a terminal
+        2. Go to Menu → RX → ...
+        3. Set band to 20m, mode USB
+        4. Click ...
+        5. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Terminal / console output
+      description: |
+        **Very important.** Start piHPSDR **from a terminal** so the diagnostic messages (`t_print`)
+        are visible, reproduce the problem, then paste the relevant output here — especially anything
+        printed at startup, during discovery, and at the moment of failure. Include any crash/backtrace.
+      render: shell
+    validations:
+      required: false
+
+  - type: dropdown
+    id: regression
+    attributes:
+      label: Is this a regression?
+      description: Did it work in a previous version?
+      options:
+        - "Don't know / first time using piHPSDR"
+        - "No — never worked"
+        - "Yes — it worked in an earlier version (state which below)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: |
+        Anything else that helps — screenshots or a short screen recording, the last-known-good version
+        for a regression, non-default compile options (`make.config.pihpsdr`), custom themes/JSON configs,
+        or a link to your `props`/config file.
+    validations:
+      required: false

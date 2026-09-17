@@ -1,0 +1,68 @@
+name: "✨ Feature request"
+description: "Suggest a new feature or an improvement to piHPSDR."
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the suggestion! Please check the [Manual](https://github.com/dl1ycf/pihpsdr/releases/download/v2.5/piHPSDR-Manual.pdf)
+        and [existing issues](https://github.com/brett-todd/pihpsdr/issues?q=is%3Aissue) first — the feature may already exist or be requested.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / motivation
+      description: What are you trying to do that is currently hard or impossible?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the feature or behaviour you'd like to see.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Which area does this affect?
+      options:
+        - "Receiver / DSP"
+        - "Transmitter / DSP"
+        - "Noise reduction (NR/NB/NR3/NR4)"
+        - "UI / panadapter / waterfall / themes"
+        - "Audio / VAC"
+        - "Remote / client-server"
+        - "CAT / TCI / rigctl"
+        - "MIDI / GPIO / front-panel controllers"
+        - "Specific radio hardware support"
+        - "Build / packaging"
+        - "Other"
+    validations:
+      required: true
+
+  - type: input
+    id: hardware
+    attributes:
+      label: Relevant radio hardware (if any)
+      placeholder: Hermes Lite 2 / ANAN-7000 / SoapySDR RTL-SDR
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Mock-ups, links to how other SDR programs do it, references, etc.
+    validations:
+      required: false

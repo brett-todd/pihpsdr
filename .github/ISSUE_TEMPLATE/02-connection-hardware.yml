@@ -1,0 +1,172 @@
+name: "📡 Radio not detected / connection problem"
+description: "piHPSDR cannot discover or stay connected to your SDR hardware."
+title: "[Connection]: "
+labels: ["connection", "hardware"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form when the radio is **not discovered**, discovery finds the wrong device, the
+        connection drops, or you see "sequence error" / timeout messages.
+
+        Please start piHPSDR **from a terminal** so the discovery messages are visible — they are the
+        single most useful piece of information for these problems.
+
+  - type: textarea
+    id: version
+    attributes:
+      label: Version information
+      description: Full output of `pihpsdr -V` or **Menu → About** (version, commit, options, audio module).
+      render: text
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Raspberry Pi OS (32-bit)
+        - Raspberry Pi OS (64-bit)
+        - Debian / Ubuntu / other Linux (desktop or laptop)
+        - macOS on Apple Silicon
+        - macOS on Intel
+    validations:
+      required: true
+
+  - type: input
+    id: os_details
+    attributes:
+      label: OS version / computer model
+      placeholder: Raspberry Pi 5 8GB / Raspberry Pi OS Bookworm 64-bit
+    validations:
+      required: true
+
+  - type: dropdown
+    id: device
+    attributes:
+      label: Radio / device
+      options:
+        - "HPSDR: Hermes (ANAN-10/100)"
+        - "HPSDR: Hermes II"
+        - "HPSDR: Angelia (ANAN-100D)"
+        - "HPSDR: Orion (ANAN-200D)"
+        - "HPSDR: Orion2 / ANAN-7000DLE / 8000DLE"
+        - "HPSDR: Saturn / ANAN-G2"
+        - "Hermes Lite 2 (HL2)"
+        - "Hermes Lite (v1)"
+        - "STEMlab / Red Pitaya (HAMlab)"
+        - "Metis / Ozy (legacy)"
+        - "SoapySDR: RTL-SDR"
+        - "SoapySDR: Adalm-Pluto"
+        - "SoapySDR: HackRF"
+        - "SoapySDR: Airspy"
+        - "SoapySDR: SDRplay"
+        - "SoapySDR: other"
+        - "Other / not sure"
+    validations:
+      required: true
+
+  - type: input
+    id: firmware
+    attributes:
+      label: Radio firmware / gateware version
+      description: |
+        e.g. HL2 gateware version, Saturn/G2 FPGA firmware, protocol-2 firmware version. If piHPSDR
+        printed a firmware compatibility line at startup, include it.
+      placeholder: HL2 gateware v7.6
+    validations:
+      required: false
+
+  - type: dropdown
+    id: protocol
+    attributes:
+      label: Protocol
+      options:
+        - "P1 (old / original HPSDR protocol)"
+        - "P2 (new HPSDR protocol)"
+        - "SoapySDR"
+        - "Not sure"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: symptom
+    attributes:
+      label: What exactly happens?
+      options:
+        - "Radio is never discovered (discovery list is empty)"
+        - "Discovery finds the device but connecting fails/times out"
+        - "Connects, then drops out / freezes after a while"
+        - "'sequence error' or packet-loss messages in the log"
+        - "Wrong device type / wrong menu shown for my radio"
+        - "Two devices found / duplicate discovery"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: connection
+    attributes:
+      label: Connection method
+      options:
+        - "Direct Ethernet cable (radio ↔ computer)"
+        - "Ethernet via switch/router (same subnet)"
+        - "Ethernet via switch/router (different subnet / VLAN / Wi-Fi)"
+        - "USB (Ozy / SoapySDR device)"
+        - "localhost / same machine"
+    validations:
+      required: true
+
+  - type: input
+    id: network
+    attributes:
+      label: Network details (for Ethernet radios)
+      description: |
+        Computer IP/subnet and radio IP if known. Note if the interface is Wi-Fi vs wired, and whether
+        there is more than one network interface on the computer.
+      placeholder: "PC 192.168.1.50/24 wired; radio 192.168.1.100; single NIC"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: firewall
+    attributes:
+      label: Have you checked the firewall?
+      description: piHPSDR relies on UDP broadcast for discovery; firewalls frequently block it.
+      options:
+        - "Firewall is disabled / not applicable"
+        - "Firewall is on and piHPSDR/UDP is allowed"
+        - "Firewall is on — not sure if it's blocking"
+        - "Not checked yet"
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Terminal output from startup + discovery
+      description: |
+        Start piHPSDR from a terminal, attempt discovery/connection, and paste **all** output here
+        (from launch through the failure). This includes the `-V` build line and the discovery messages.
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: tried
+    attributes:
+      label: What have you already tried?
+      placeholder: |
+        - Different cable / port
+        - Direct connection instead of via router
+        - Rebooted radio and computer
+        - Confirmed radio works with another program (which one?)
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+    validations:
+      required: false

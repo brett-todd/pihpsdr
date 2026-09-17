@@ -1,0 +1,104 @@
+name: "🛠️ Build / compile / install problem"
+description: "piHPSDR fails to compile, link, or install; missing dependencies."
+title: "[Build]: "
+labels: ["build"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for problems **building or installing** piHPSDR.
+
+        Please read [README_COMPILING.md](https://github.com/brett-todd/pihpsdr/blob/master/README_COMPILING.md)
+        first, and run the appropriate dependency installer (`LINUX/libinstall.sh` or `MacOS/libinstall.sh`)
+        before reporting missing-library errors.
+
+  - type: input
+    id: commit
+    attributes:
+      label: Source version
+      description: Output of `git rev-parse --short HEAD`, or the release/tag you are building.
+      placeholder: master @ abc1234  (or v3.0.15)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Raspberry Pi OS (32-bit)
+        - Raspberry Pi OS (64-bit)
+        - Debian / Ubuntu / other Linux (desktop or laptop)
+        - macOS on Apple Silicon (Homebrew)
+        - macOS on Apple Silicon (MacPorts)
+        - macOS on Intel (Homebrew)
+        - macOS on Intel (MacPorts)
+    validations:
+      required: true
+
+  - type: input
+    id: os_details
+    attributes:
+      label: OS version / computer model
+      placeholder: Raspberry Pi OS Bookworm 64-bit on Pi 4B
+    validations:
+      required: true
+
+  - type: input
+    id: toolchain
+    attributes:
+      label: Compiler / toolchain version
+      description: Output of `gcc --version` or `clang --version`.
+      placeholder: gcc 12.2.0
+    validations:
+      required: false
+
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Which stage fails?
+      options:
+        - "Dependency install (libinstall.sh)"
+        - "Compilation (make) — compiler error"
+        - "Linking — undefined reference / missing library"
+        - "Runtime — builds but won't start / immediately exits"
+        - "make release / install step"
+    validations:
+      required: true
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Compile-time options
+      description: |
+        Paste your `make.config.pihpsdr` if you created one (GPIO / MIDI / USBOZY / SOAPYSDR / AUDIO=...).
+        If you did not create one, say "defaults".
+      render: makefile
+      placeholder: |
+        GPIO=OFF
+        SOAPYSDR=ON
+        AUDIO=ALSA
+    validations:
+      required: false
+
+  - type: textarea
+    id: error
+    attributes:
+      label: Full error output
+      description: |
+        Run `make clean` then `make 2>&1 | tee build.log` and paste the **complete** output, or at least
+        from the first error onwards. Do not truncate the first error — it is usually the real cause.
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: tried
+    attributes:
+      label: What have you already tried?
+      placeholder: |
+        - Ran LINUX/libinstall.sh
+        - make clean && make
+        - Installed package X manually
+    validations:
+      required: false
