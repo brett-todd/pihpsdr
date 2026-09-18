@@ -4,6 +4,8 @@ LIST OF RECENT PIHPSDR MATRIX CHANGES
 September 2026
 ---------------
 
+### v3.0.15 - released 2026-09-17
+
 - 2026-09-17: Added GitHub issue templates for bug reports and feature
   requests.
 
@@ -13,6 +15,8 @@ September 2026
 - 2026-09-16: Fixed the false-positive "G2 Panel" menu item on Hermes Lite 2
   (HL2) builds by preventing the G2-v2 detection flag from being forced true
   when GPIO support is enabled without a real G2-v2 panel being detected.
+
+### v3.0.14 - released 2026-09-15
 
 - 2026-09-15: Added a GitHub release workflow for automated Matrix releases.
 
@@ -57,3 +61,7 @@ September 2026
 - 2026-09-13: Made the Linux libinstall PipeWire/PulseAudio check safe for
   desktop installations by only removing pulseaudio when pipewire-pulse is
   actually installed and the removal is clean.
+
+### v3.0 - released 2026-06-25
+
+- Baseline upstream piHPSDR v3.0 release from which the Matrix line is derived.
