@@ -4,6 +4,11 @@ LIST OF RECENT PIHPSDR MATRIX CHANGES
 September 2026
 ---------------
 
+### v3.0.16 - released 2026-09-24
+
+- 2026-09-24: Fixed RX2 bandstack persistence so CTUN state survives band
+  changes and is restored when returning to the band.
+
 ### v3.0.15 - released 2026-09-17
 
 - 2026-09-17: Added GitHub issue templates for bug reports and feature
