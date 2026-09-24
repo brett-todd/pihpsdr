@@ -84,18 +84,29 @@ static inline long long ROUND(long long freq, int nsteps, int step) {
 
 struct _vfo vfo[MAX_VFOS];
 
-static void vfo_save_bandstack(void) {
-  BANDSTACK *bandstack = bandstack_get_bandstack(vfo[0].band);
-  bandstack->current_entry = vfo[0].bandstack;
-  BANDSTACK_ENTRY *entry = &bandstack->entry[vfo[0].bandstack];
-  entry->frequency = vfo[0].frequency;
-  entry->mode = vfo[0].mode;
-  entry->filter = vfo[0].filter;
-  entry->ctun = vfo[0].ctun;
-  entry->ctun_frequency = vfo[0].ctun_frequency;
-  entry->deviation = vfo[0].deviation;
+static void vfo_save_bandstack_id(int id) {
+  //
+  // Write back the *leaving* state of VFO "id" into its current band-stack entry.
+  // This must be done for both receivers so that RX2 band/CTUN/mode/filter state
+  // is preserved when leaving and later returning to a band. The shared
+  // "current_entry" pointer and the (TX-owned) CTCSS settings remain anchored on
+  // RX1 / VFO A so that RX2 does not clobber RX1's active-entry selection.
+  //
+  BANDSTACK *bandstack = bandstack_get_bandstack(vfo[id].band);
 
-  if (can_transmit) {
+  if (id == 0) {
+    bandstack->current_entry = vfo[id].bandstack;
+  }
+
+  BANDSTACK_ENTRY *entry = &bandstack->entry[vfo[id].bandstack];
+  entry->frequency = vfo[id].frequency;
+  entry->mode = vfo[id].mode;
+  entry->filter = vfo[id].filter;
+  entry->ctun = vfo[id].ctun;
+  entry->ctun_frequency = vfo[id].ctun_frequency;
+  entry->deviation = vfo[id].deviation;
+
+  if (id == 0 && can_transmit) {
     entry->ctcss_enabled = transmitter->ctcss_enabled;
     entry->ctcss = transmitter->ctcss;
   }
@@ -103,7 +114,7 @@ static void vfo_save_bandstack(void) {
 
 void vfo_save_state(void) {
   ASSERT_SERVER();
-  vfo_save_bandstack();
+  vfo_save_bandstack_id(0);
 
   for (int i = 0; i < MAX_VFOS; i++) {
     SetPropI1("vfo.%d.band", i,             vfo[i].band);
@@ -311,9 +322,12 @@ void vfo_id_band_changed(int id, int b) {
     }
   }
 
-  if (id == 0) {
-    vfo_save_bandstack();
-  }
+  //
+  // Save the leaving state of this VFO back into its current band-stack entry.
+  // Done for both RX1 and RX2 so that RX2 CTUN/mode/filter/deviation survive a
+  // band change and are restored on returning to the band.
+  //
+  vfo_save_bandstack_id(id);
 
   if (b == vfo[id].band) {
     // same band selected - step to the next band stack
@@ -384,10 +398,15 @@ void vfo_id_bandstack_changed(int id, int b) {
   BANDSTACK *bandstack = bandstack_get_bandstack(vfo[id].band);
   int oldstack = bandstack->current_entry;
 
+  //
+  // Save the leaving state of this VFO back into its current band-stack entry
+  // (for both RX1 and RX2) before switching to the selected entry.
+  //
+  vfo_save_bandstack_id(id);
+
   if (id == 0) {
     // do this immediately so the bandstack menu can show the new
     // data also if the radio is remote
-    vfo_save_bandstack();
     bandstack->current_entry = b;
   }
 

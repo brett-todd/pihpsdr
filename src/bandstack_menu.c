@@ -78,7 +78,7 @@ static gboolean bandstack_select_cb (GtkWidget *widget, gpointer data) {
 
   if (myvfo == 0 && current) {
     //
-    // vfo_bandstack_changed() calls vfo_save_bandstack(), so the frequency/mode
+    // vfo_bandstack_changed() calls vfo_save_bandstack_id(), so the frequency/mode
     // of the previous "current" bandstack will be overwritten with the
     // current frequency/mode, which should be reflected by the button text.
     //
