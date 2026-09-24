@@ -30,7 +30,10 @@ jobs:
         run: echo "path=$(find . -maxdepth 1 -type f -name 'pihpsdr-*-source.tar' | head -n 1)" >> "$GITHUB_OUTPUT"
 
       - name: Publish GitHub release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: ${{ steps.asset.outputs.path }}
-          generate_release_notes: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            "${{ steps.asset.outputs.path }}" \
+            --title "${GITHUB_REF_NAME}" \
+            --generate-notes
